@@ -1,0 +1,40 @@
+%{ for index, instance in mongo_gateways ~}
+${ instance.name } ansible_user=debian ansible_host=${instance.network[0].fixed_ip_v4}
+%{ endfor ~}
+%{ for index, instance in mongo_servers ~}
+${ instance.name } ansible_user=debian ansible_host=${instance.network[0].fixed_ip_v4}
+%{ endfor ~}
+
+[stage_development]
+
+[stage_testing]
+
+[stage_production]
+%{ for index, instance in mongo_gateways ~}
+${ instance.name }
+%{ endfor ~}
+%{ for index, instance in mongo_servers ~}
+${ instance.name }
+%{ endfor ~}
+
+[role_gateway]
+%{ for index, instance in mongo_gateways ~}
+${ instance.name }
+%{ endfor ~}
+
+[role_mongo]
+%{ for index, instance in mongo_servers ~}
+${ instance.name }
+%{ endfor ~}
+
+[all_groups:children]
+role_gateway
+role_mongo
+stage_development
+stage_testing
+stage_production
+
+[all:vars]
+mongo_groups_count = ${ mongo_groups_count }
+mongo_replicas_count = ${ mongo_replicas_count }
+

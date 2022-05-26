@@ -1,0 +1,20 @@
+---
+
+- name: Sync time
+  ansible.builtin.shell:
+    cmd: ntpdate 0.debian.pool.ntp.org
+  ignore_errors: yes
+
+- name: Install required system packages
+  ansible.builtin.apt:
+    name:
+      - vim
+      - ntpdate
+    state: latest
+    update_cache: true
+
+- name: Sync time
+  ansible.builtin.command:
+    cmd: ntpdate 0.debian.pool.ntp.org
+
+#

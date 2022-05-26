@@ -1,0 +1,30 @@
+---
+- name: Install required system packages
+  ansible.builtin.apt:
+    name:
+      - vim
+    state: latest
+    update_cache: true
+
+- name: Deploy SSHwifty configuration
+  template:
+    src: templates/sshwifty.conf.j2
+    dest: /etc/sshwifty.conf
+
+- name: Create SSHwifty directory
+  file:
+    path: /var/lib/sshwifty
+    state: directory
+
+- name: Deploy SSHwifty configuration
+  template:
+    src: templates/docker-compose.yml.j2
+    dest: /var/lib/sshwifty/docker-compose.yml
+
+- name: Run SSHwifty
+  community.docker.docker_compose:
+    project_src: /var/lib/sshwifty
+    recreate: smart
+    state: present
+
+#

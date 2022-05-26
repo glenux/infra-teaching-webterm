@@ -1,0 +1,26 @@
+---
+- hosts: app_sshwifty
+  become: true
+  tasks:
+    - include_tasks: tasks/setup_base.yml
+    - include_tasks: tasks/setup_docker.yml
+    - include_tasks: tasks/setup_sshwifty.yml
+    - include_tasks: tasks/setup_caddy.yml
+    - include_tasks: tasks/setup_sshaccess.yml
+
+  roles:
+    - role: caddy_ansible.caddy_ansible
+      caddy_setcap: 'yes'
+      caddy_systemd_network_dependency: false
+      caddy_systemd_capabilities_enabled: true
+      caddy_config: "{{ lookup('template', 'templates/Caddyfile.j2') }}"
+
+- hosts: app_mongo
+  become: true
+  tasks:
+    - include_tasks: tasks/setup_base.yml
+    - include_tasks: tasks/setup_docker.yml
+    - include_tasks: tasks/setup_mongo.yml
+    - include_tasks: tasks/setup_sshaccess.yml
+
+#
