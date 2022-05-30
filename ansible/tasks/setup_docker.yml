@@ -56,4 +56,10 @@
   pip:
     name: docker
 
+- name: adding existing user vagrant to group docker
+  user:
+    name: vagrant
+    groups: docker
+    append: 'yes'
+
 #

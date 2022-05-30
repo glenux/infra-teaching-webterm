@@ -6,24 +6,35 @@
     state: latest
     update_cache: true
 
+- name: Create SSHwifty configuration directory
+  file:
+    path: "{{ sshwifty_configuration_directory }}"
+    state: directory
+
+- name: Scan SSH keys
+  command: "ssh-keyscan {{item}}"
+  register: "host_keys"
+  changed_when: false
+  with_items: groups["role_mongos"]
+
 - name: Deploy SSHwifty configuration
   template:
     src: templates/sshwifty.conf.j2
-    dest: /etc/sshwifty.conf
+    dest: "{{ sshwifty_configuration_directory }}/sshwifty.conf"
 
 - name: Create SSHwifty directory
   file:
-    path: /var/lib/sshwifty
+    path: "{{ sshwifty_work_directory }}"
     state: directory
 
 - name: Deploy SSHwifty configuration
   template:
     src: templates/docker-compose.yml.j2
-    dest: /var/lib/sshwifty/docker-compose.yml
+    dest: "{{ sshwifty_work_directory }}/docker-compose.yml"
 
 - name: Run SSHwifty
   community.docker.docker_compose:
-    project_src: /var/lib/sshwifty
+    project_src: "{{ sshwifty_work_directory }}"
     recreate: smart
     state: present
 

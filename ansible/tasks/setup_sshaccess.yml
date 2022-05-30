@@ -3,10 +3,36 @@
 # python3 -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())'
 - name: Add the user 'debian'
   ansible.builtin.user:
-    name: debian
-    password: '$6$7SKND.wc64QSchcm$eGS36vIXypLHSd.PQM0gIq6ILx9QiRQxWNej3Gb32sKk2MuLrRlceXCJmidYATNZeJTbBXNf3c5qTmm7BB.EA1'
+    name: "{{ sshwifty_ssh_user }}"
+    password: "{{ sshwifty_ssh_password | password_hash('sha512') }}"
     shell: /bin/bash
     state: present
     update_password: always
 
+- name: Change SSH config to allow connections with password
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/sshwifty_with_password.conf
+    content: |
+      PasswordAuthentication yes
+  register: ssh_service_conf
+
+- name: Restart SSH service to take in account new changes
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+  when: ssh_service_conf.changed
+
+- name: "adding existing user {{ sshwifty_ssh_user }} to group docker"
+  user:
+    name: "{{ sshwifty_ssh_user }}"
+    groups:
+      - docker
+      - sudo
+    append: 'yes'
+
+- name: Change SUDO config to allow sudo without password to %sudo group
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/sudo_no_pass
+    content: |
+      %sudo  ALL=(ALL) NOPASSWD: ALL
 #

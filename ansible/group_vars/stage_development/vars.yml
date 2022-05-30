@@ -1,0 +1,8 @@
+---
+sshwifty_hostname: "0.0.0.0"
+sshwifty_public_port: "80"
+sshwifty_shared_key: "demo"
+
+sshwifty_authentication: "password"
+sshwifty_ssh_password: "demo"
+sshwifty_ssh_user: "demo"

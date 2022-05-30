@@ -1,0 +1,4 @@
+---
+sshwifty_hostname: "gateway3.teaching.glenux.net"
+
+mongo_group_id: 3

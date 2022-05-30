@@ -1,7 +1,7 @@
-http://0.0.0.0:80 {
+{{ sshwifty_hostname }}:{{ sshwifty_public_port }} {
   log
 
-  reverse_proxy http://localhost:8080 {
+  reverse_proxy localhost:{{ sshwifty_internal_port }} {
     header_up Host {http.request.host}
     header_up X-Real-IP {http.request.remote.host}
     header_up X-Forwarded-For {http.request.remote.host}

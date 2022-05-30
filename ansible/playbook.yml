@@ -1,5 +1,11 @@
 ---
-- hosts: app_sshwifty
+# Collect tasks about role_mongo
+- hosts: role_mongo
+  become: true
+  tasks: []
+
+# Then deploy gateways
+- hosts: role_gateway
   become: true
   tasks:
     - include_tasks: tasks/setup_base.yml
@@ -15,7 +21,8 @@
       caddy_systemd_capabilities_enabled: true
       caddy_config: "{{ lookup('template', 'templates/Caddyfile.j2') }}"
 
-- hosts: app_mongo
+# And deploy mongos
+- hosts: role_mongo
   become: true
   tasks:
     - include_tasks: tasks/setup_base.yml

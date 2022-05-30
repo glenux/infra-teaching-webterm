@@ -1,0 +1,5 @@
+---
+sshwifty_hostname: "443"
+sshwifty_public_port: "443"
+
+sshwifty_authentication: "password"

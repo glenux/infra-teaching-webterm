@@ -1,3 +1,4 @@
+{# vim: set ts=2 sw=2 et ft=jinja2,json : #}
 {
   {# "HostName": "localhost", #}
   "SharedKey": "{{ sshwifty_shared_key }}",
@@ -17,30 +18,45 @@
     }
   ],
   "Presets": [
+    {% for host in groups['role_mongo'] %}
+      {% set server_group_id = loop.index0 // mongo_replicas_count %}
+      {% set server_index = loop.index0 % mongo_replicas_count %}
+      {% set server_ip_addr = hostvars[host]['ansible_facts']['default_ipv4']['address'] %}
+      {% if server_group_id == mongo_group_id %}
+      {
+        "Title": "Group {{ server_group_id }} - Server {{ server_index }} ({{ host }})",
+        "Type": "SSH",
+        "Host": "{{ server_ip_addr }}:22",
+        "Meta": {
+        "User": "{{ sshwifty_ssh_user }}",
+        {% if "password" == sshwifty_authentication | lower %}
+        "Authentication": "Password",
+        "Password": "{{ sshwifty_ssh_password }}",
+        {% else %}
+        "Authentication": "Private Key",
+        "Private Key": "file://{{ sshwifty_ssh_private_key }}",
+        {% endif %}
+        {# "Fingerprint": home"SHA256:bgO...." #}
+        "Encoding": "utf-8"
+        }
+      },
+      {% endif %}
+    {% endfor %}
     {
-      "Title": "Gateway",
+      "Title": "Group {{ mongo_group_id }} - Gateway ({{ ansible_facts['hostname'] }})",
       "Type": "SSH",
-      "Host": "{{ansible_facts.all_ipv4_addresses | ansible.netcommon.ipaddr('192.168.50.0/24') | first }}:22",
+      "Host": "{{ ansible_ssh_host }}:22",
       "Meta": {
-        "User": "debian",
-        "Encoding": "utf-8",
-        "Password": "debian",
-        "Authentication": "Password" {# , #}
-        {# "Private Key": "file:///home/user/.ssh/private_key", #}
+        "User": "{{ sshwifty_ssh_user }}",
+        {% if "password" == sshwifty_authentication | lower %}
+          "Authentication": "Password",
+          "Password": "{{ sshwifty_ssh_password }}",
+        {% else %}
+          "Authentication": "Private Key",
+          "Private Key": "file://{{ sshwifty_ssh_private_key }}",
+        {% endif %}
         {# "Fingerprint": "SHA256:bgO...." #}
-      }
-    },
-    {
-      "Title": "SDF.org Unix Shell",
-      "Type": "SSH",
-      "Host": "sdf.org:22",
-      "Meta": {
-        "User": "debian",
-        "Encoding": "utf-8",
-        "Password": "debian",
-        "Authentication": "Password" {# , #}
-        {# "Private Key": "file:///home/user/.ssh/private_key", #}
-        {# "Fingerprint": "SHA256:bgO...." #}
+        "Encoding": "utf-8"
       }
     }
   ],

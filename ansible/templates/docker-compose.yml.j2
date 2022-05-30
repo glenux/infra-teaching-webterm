@@ -7,12 +7,12 @@ services:
     image: niruix/sshwifty:latest
     restart: always
     ports:
-      - 8080:8182
+      - "{{sshwifty_internal_port}}:8182"
     environment:
-      SSHWIFTY_SHAREDKEY: admin
+      SSHWIFTY_SHAREDKEY: "{{sshwifty_shared_key}}"
       SSHWIFTY_CONFIG: /etc/sshwifty.conf
     volumes:
-      - /etc/sshwifty.conf:/etc/sshwifty.conf
+      - "{{sshwifty_configuration_directory}}/sshwifty.conf:/etc/sshwifty.conf"
 
 volumes: {}
 
