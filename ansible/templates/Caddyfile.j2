@@ -1,4 +1,4 @@
-{{ sshwifty_hostname }}:{{ sshwifty_public_port }} {
+{% if sshwifty_hostname != "0.0.0.0" %}{{ sshwifty_hostname }}{% endif %}:{{ sshwifty_public_port }} {
   log
 
   reverse_proxy localhost:{{ sshwifty_internal_port }} {

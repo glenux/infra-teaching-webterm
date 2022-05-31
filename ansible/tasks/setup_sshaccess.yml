@@ -1,7 +1,7 @@
 ---
 # Password needs to be encrypted. Use the following command to change password
 # python3 -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())'
-- name: Add the user 'debian'
+- name: "Add the user '{{ sshwifty_ssh_user }}'"
   ansible.builtin.user:
     name: "{{ sshwifty_ssh_user }}"
     password: "{{ sshwifty_ssh_password | password_hash('sha512') }}"

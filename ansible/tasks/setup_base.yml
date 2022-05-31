@@ -3,8 +3,8 @@
 - name: "Sync time - first try (needed by apt)"
   ansible.builtin.shell:
     cmd: hash ntpdate 2>/dev/null && ntpdate 0.debian.pool.ntp.org
+  changed_when: 'False'
   ignore_errors: 'yes'
-  no_log: 'yes'
 
 - name: Install required system packages
   ansible.builtin.apt:

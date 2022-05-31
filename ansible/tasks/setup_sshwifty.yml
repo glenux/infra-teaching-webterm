@@ -12,15 +12,23 @@
     state: directory
 
 - name: Scan SSH keys
-  command: "ssh-keyscan {{item}}"
+  shell: "ssh-keyscan -t ed25519 {{ hostvars[item]['ansible_facts']['default_ipv4']['address'] }} 2>/dev/null | ssh-keygen -lf - |cut -f2 -d' '"
   register: "host_keys"
   changed_when: false
-  with_items: groups["role_mongos"]
+  with_items: "{{ groups['role_mongo'] }}"
+
+- debug:
+    msg: "item.item={{ item.item }}, item.stdout={{ item.stdout }}"
+  with_items: "{{ host_keys.results }}"
 
 - name: Deploy SSHwifty configuration
   template:
     src: templates/sshwifty.conf.j2
     dest: "{{ sshwifty_configuration_directory }}/sshwifty.conf"
+
+# - name: Debug
+#   fail: "msg=STOP"
+#   when: "True"
 
 - name: Create SSHwifty directory
   file:

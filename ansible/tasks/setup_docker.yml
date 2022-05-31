@@ -34,6 +34,7 @@
 - name: Get DEB architecture
   shell: dpkg --print-architecture
   register: deb_architecture
+  changed_when: 'False'
 
 - name: Add repository into sources list
   ansible.builtin.apt_repository:
