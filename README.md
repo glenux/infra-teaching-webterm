@@ -4,8 +4,17 @@
 Easy web terminal for studients, when you have to teach system administration,
 and SSH is not available, not installable or not allowed.
 
+## Prerequisites
 
-## Deployment
+* For development
+  * Vagrant - manage virtual machines
+  * Minica - generate certificates
+  * Ansible - provisionning
+* For production
+  * Terraform - manage provider infrastructure
+  * Ansible - provisionning
+
+## Installation
 
 ### Development / Test
 
