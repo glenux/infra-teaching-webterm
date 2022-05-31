@@ -1,7 +1,7 @@
 
 # Teaching WebTerm
 
-Easy web terminal for studients, when you have to teach system administration,
+Easy web terminal for students, when you have to teach system administration,
 and SSH is not available, not installable or not allowed.
 
 ## Prerequisites
