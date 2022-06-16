@@ -12,14 +12,14 @@ terraform {
     }
 
     gandi = {
-      source = "go-gandi/gandi"
+      source  = "go-gandi/gandi"
       version = "~> 2.0.1"
     }
   }
 }
 
 provider "gandi" {
-  key = "${var.gandi_key}"
+  key = var.gandi_key
 }
 
 provider "openstack" {

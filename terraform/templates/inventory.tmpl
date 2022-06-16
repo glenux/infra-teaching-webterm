@@ -1,8 +1,8 @@
 %{ for index, instance in mongo_gateways ~}
-${ instance.name } ansible_user=debian ansible_host=${instance.network[0].fixed_ip_v4}
+${ instance.name } ansible_user=debian ansible_host=${instance.network[0].fixed_ip_v4} sshwifty_hostname=${dns_gateways[index].name}.${dns_gateways[index].zone} mongo_group_id=${instance.metadata.mongo_group_id}
 %{ endfor ~}
 %{ for index, instance in mongo_servers ~}
-${ instance.name } ansible_user=debian ansible_host=${instance.network[0].fixed_ip_v4}
+${ instance.name } ansible_user=debian ansible_host=${instance.network[0].fixed_ip_v4} mongo_group_id=${instance.metadata.mongo_group_id} mongo_group_index=${instance.metadata.mongo_group_index}
 %{ endfor ~}
 
 [stage_development]
