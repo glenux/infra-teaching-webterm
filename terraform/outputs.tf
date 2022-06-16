@@ -9,7 +9,7 @@ resource "local_file" "ansible_inventory" {
       mongo_replicas_count = var.mongo_replicas_count
     }
   )
-  filename        = "outputs/inventory"
+  filename        = "_build/ansible_inventory"
   file_permission = "0644"
 
 }

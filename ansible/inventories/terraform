@@ -1,1 +1,1 @@
-../../terraform/outputs/inventory
+../../terraform/_build/ansible_inventory
