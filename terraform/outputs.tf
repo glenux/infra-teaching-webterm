@@ -1,5 +1,5 @@
 resource "local_file" "ansible_inventory" {
-  content = templatefile("templates/inventory.tmpl",
+  content = templatefile("templates/inventory.yml.tmpl",
     {
       dns_gateways         = gandi_livedns_record.mongo_gateways.*
       dns_servers          = gandi_livedns_record.mongo_gateways.*

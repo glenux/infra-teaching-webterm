@@ -1,0 +1,37 @@
+all:
+  children:
+    all_groups:
+      children:
+        role_gateway:
+          hosts:
+%{ for index, instance in mongo_gateways ~}
+            prod-gateway9:
+              ansible_host: ${instance.network[0].fixed_ip_v4}
+              ansible_user: debian
+              mongo_group_id: ${instance.metadata.mongo_group_id}
+              mongo_groups_count: ${ mongo_groups_count }
+              mongo_replicas_count: ${ mongo_replicas_count }
+              sshwifty_hostname: ${dns_gateways[index].name}.${dns_gateways[index].zone}
+%{ endfor ~}
+        role_mongo:
+          hosts:
+%{ for index, instance in mongo_servers ~}
+            ${ instance.name }:
+              ansible_host: ${instance.network[0].fixed_ip_v4}
+              ansible_user: debian
+              mongo_group_id: ${instance.metadata.mongo_group_id}
+              mongo_group_index: ${instance.metadata.mongo_group_index}
+              mongo_groups_count: ${ mongo_groups_count }
+              mongo_replicas_count: ${ mongo_replicas_count }
+%{ endfor ~}
+        stage_development: {}
+        stage_production:
+          hosts:
+%{ for index, instance in mongo_gateways ~}
+            ${ instance.name } : {}
+%{ endfor ~}
+%{ for index, instance in mongo_servers ~}
+            ${ instance.name } : {} 
+%{ endfor ~}
+        stage_testing: {}
+    ungrouped: {}
