@@ -1,4 +1,20 @@
 ---
+# - name: Check sshwifty_* variables are not empty
+#   assert:
+#     that:
+#       sshwifty_configuration_directory
+#       sshwifty_hostname
+#       sshwifty_public_port
+#       sshwifty_shared_key
+#       sshwifty_authentication
+#       sshwifty_ssh_password
+#       sshwifty_ssh_user
+#       sshwifty_internal_port
+#       sshwifty_configuration_directory
+#       sshwifty_work_directory
+#       sshwifty_gateway_access
+#   msg: ""
+
 - name: Install required system packages
   ansible.builtin.apt:
     name:
@@ -43,7 +59,7 @@
 - name: Run SSHwifty
   community.docker.docker_compose:
     project_src: "{{ sshwifty_work_directory }}"
-    recreate: smart
+    recreate: always
     state: present
 
 #

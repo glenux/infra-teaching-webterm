@@ -1,4 +1,4 @@
-{# vim: set ts=2 sw=2 et ft=jinja2 : #}
+{# vim: set ts=2 sw=2 et ft=jinja2,json : #}
 {
   {# "HostName": "localhost", #}
   "SharedKey": "{{ sshwifty_shared_key }}",
@@ -18,49 +18,49 @@
     }
   ],
   "Presets": [
-    {%- for host in groups['role_mongo'] -%}
-      {%- set server_group_id = loop.index0 // mongo_replicas_count -%}
-      {%- set server_index = loop.index0 % mongo_replicas_count -%}
-      {%- set server_ip_addr = hostvars[host]['ansible_facts']['default_ipv4']['address'] -%}
-      {%- if server_group_id == mongo_group_id -%}
+    {% for host in groups['role_mongo'] %}
+      {% set server_group_id = loop.index0 // mongo_replicas_count %}
+      {% set server_index = loop.index0 % mongo_replicas_count %}
+      {% set server_ip_addr = hostvars[host]['ansible_facts']['default_ipv4']['address'] %}
+      {% if server_group_id == mongo_group_id %}
       {
         "Title": "Group {{ server_group_id }} - Server {{ server_index }} ({{ host }})",
         "Type": "SSH",
         "Host": "{{ server_ip_addr }}:22",
         "Meta": {
         "User": "{{ sshwifty_ssh_user }}",
-        {%- if "password" == sshwifty_authentication | lower -%}
+        {% if "password" == sshwifty_authentication | lower %}
         "Authentication": "Password",
         "Password": "{{ sshwifty_ssh_password }}",
-        {%- else -%}
+        {% else %}
         "Authentication": "Private Key",
         "Private Key": "file://{{ sshwifty_ssh_private_key }}",
-        {%- endif -%}
+        {% endif %}
         {# "Fingerprint": home"SHA256:bgO...." #}
         "Encoding": "utf-8"
         }
-      }{%- if sshwifty_gateway_access or (server_index + 1) < mongo_replicas_count -%},{%- endif -%}
-      {%- endif -%}
-    {%- endfor -%}
-    {%- if sshwifty_gateway_access -%}
+      }{% if not loop.last %},{% endif %}
+      {% endif %}
+    {% endfor %}
+    {#
     {
       "Title": "Group {{ mongo_group_id }} - Gateway ({{ ansible_facts['hostname'] }})",
       "Type": "SSH",
       "Host": "{{ ansible_ssh_host }}:22",
       "Meta": {
         "User": "{{ sshwifty_ssh_user }}",
-        {%- if "password" == sshwifty_authentication | lower -%}
+        {% if "password" == sshwifty_authentication | lower %}
           "Authentication": "Password",
           "Password": "{{ sshwifty_ssh_password }}",
-        {%- else -%}
+        {% else %}
           "Authentication": "Private Key",
           "Private Key": "file://{{ sshwifty_ssh_private_key }}",
-        {%- endif -%}
+        {% endif %}
         {# "Fingerprint": "SHA256:bgO...." #}
         "Encoding": "utf-8"
       }
     }
-    {%- endif -%}
+    #}
   ],
   "OnlyAllowPresetRemotes": true
 }

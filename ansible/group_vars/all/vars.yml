@@ -3,5 +3,6 @@
 sshwifty_internal_port: 8080
 sshwifty_configuration_directory: "/etc/sshwifty"
 sshwifty_work_directory: "/var/lib/sshwifty"
+sshwifty_gateway_access: false
 
 #
